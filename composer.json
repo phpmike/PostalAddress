@@ -1,0 +1,27 @@
+{
+    "name": "mv/postal-address",
+    "type": "library",
+    "description": "Manage address in PHP, particulary AFNOR XPZ 10-011 for french postal address",
+    "keywords": ["postal address", "address", "afnor", "adresse", "adresse postale"],
+    "homepage": "https://github.com/phpmike/PostalAddress",
+    "license": "GPL",
+    "authors": [
+        {
+            "name": "Michaël VEROUX",
+            "homepage": "https://github.com/phpmike"
+        }
+    ],
+    "archive": {
+        "exclude": ["Tests/", "build/", "/.travis.yml", "/build.xml", "phpunit.xml.dist"]
+    },
+    "autoload": {
+        "psr-4": { "Mv\\PostalAddress\\": "lib/" }
+    },
+    "require": {
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.x-dev"
+        }
+    }
+}
