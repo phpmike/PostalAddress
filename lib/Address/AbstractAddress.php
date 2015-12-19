@@ -67,6 +67,11 @@ abstract class AbstractAddress implements PostalAddressInterface
     protected $city = '';
 
     /**
+     * @var string
+     */
+    protected $country = '';
+
+    /**
      * @param string $city
      * @return $this
      */
@@ -258,6 +263,26 @@ abstract class AbstractAddress implements PostalAddressInterface
 
     /**
      * @return string
+     */
+    public function getCountry()
+    {
+        return $this->country;
+    }
+
+    /**
+     * @param string $country
+     *
+     * @return $this
+     */
+    public function setCountry($country)
+    {
+        $this->country = $country;
+
+        return $this;
+    }
+
+    /**
+     * @return string
      * @author Michaël VEROUX
      */
     public function getPostalFormatted()
@@ -309,5 +334,27 @@ abstract class AbstractAddress implements PostalAddressInterface
         if('' !== $this->$property) {
             throw new WrongAddressException('This address can\'t be right!');
         }
+    }
+
+    /**
+     * @param string $string
+     *
+     * @return string
+     * @author Michaël VEROUX
+     */
+    protected function toUpper($string)
+    {
+        return mb_strtoupper($string, 'UTF-8');
+    }
+
+    /**
+     * @param string $string
+     *
+     * @return string
+     * @author Michaël VEROUX
+     */
+    protected function filterNotAlphaNum($string)
+    {
+        return preg_replace('#\W|_#u', ' ', $string);
     }
 } 

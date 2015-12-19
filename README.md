@@ -35,9 +35,9 @@ This returns:
 ```
 Ma Société
 Service compta
-ZI des industries
-1 bis Avenue de la République
-75011 Paris
+ZI DES INDUSTRIES
+1 BIS AVENUE DE LA RÉPUBLIQUE
+75011 PARIS
 ```
 
 Warning

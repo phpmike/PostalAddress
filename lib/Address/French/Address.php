@@ -21,24 +21,33 @@ class Address extends AbstractAddress
 {
     /**
      * App ou Bal - étage - couloir - esc
+     *
      * @var string
      */
     protected $app = '';
 
     /**
      * Entrée, immeuble, bâtiment, résidence, ZI
+     *
      * @var string
      */
     protected $bat = '';
 
     /**
      * Lieu-dit, service de distribution, commune géographique, mention spéciale
+     *
      * @var string
      */
     protected $cityGeo = '';
 
     /**
+     * @var string
+     */
+    protected $country = 'FRANCE';
+
+    /**
      * @param string $app
+     *
      * @return $this
      */
     public function setApp($app)
@@ -61,6 +70,7 @@ class Address extends AbstractAddress
 
     /**
      * @param string $bat
+     *
      * @return $this
      */
     public function setBat($bat)
@@ -80,6 +90,7 @@ class Address extends AbstractAddress
 
     /**
      * @param string $cityGeo
+     *
      * @return $this
      */
     public function setCityGeo($cityGeo)
@@ -94,11 +105,12 @@ class Address extends AbstractAddress
      */
     public function getCityGeo()
     {
-        return $this->cityGeo;
+        return $this->filterNotAlphaNum($this->cityGeo);
     }
 
     /**
      * @param string $society
+     *
      * @return $this
      * @author Michaël VEROUX
      */
@@ -113,6 +125,7 @@ class Address extends AbstractAddress
 
     /**
      * @param string $service
+     *
      * @return $this
      * @author Michaël VEROUX
      */
@@ -128,6 +141,7 @@ class Address extends AbstractAddress
 
     /**
      * @param string $civility
+     *
      * @return $this
      * @author Michaël VEROUX
      */
@@ -140,6 +154,7 @@ class Address extends AbstractAddress
 
     /**
      * @param string $firstname
+     *
      * @return $this
      * @author Michaël VEROUX
      */
@@ -152,6 +167,7 @@ class Address extends AbstractAddress
 
     /**
      * @param string $name
+     *
      * @return $this
      * @author Michaël VEROUX
      */
@@ -164,6 +180,30 @@ class Address extends AbstractAddress
 
     /**
      * @return string
+     */
+    public function getStreetName()
+    {
+        return $this->filterNotAlphaNum(parent::getStreetName());
+    }
+
+    /**
+     * @return string
+     */
+    public function getCity()
+    {
+        return $this->filterNotAlphaNum(parent::getCity());
+    }
+
+    /**
+     * @return string
+     */
+    public function getZipCode()
+    {
+        return $this->filterNotAlphaNum(parent::getZipCode());
+    }
+
+    /**
+     * @return string
      * @author Michaël VEROUX
      */
     public function getPostalFormatted()
@@ -171,34 +211,46 @@ class Address extends AbstractAddress
         $address = array();
 
         // Line 1
-        if('' !== $this->getSociety()) {
+        if ('' !== $this->getSociety()) {
             $address[] = $this->getSociety();
         } else {
             $address[] = sprintf('%s %s %s', $this->getCivility(), $this->getFirstname(), $this->getName());
         }
 
         // Line 2
-        if('' !== $this->getService()) {
+        if ('' !== $this->getService()) {
             $address[] = $this->getService();
         } else {
             $address[] = $this->getApp();
         }
 
         // Line 3
-        $address[] = $this->getBat();
+        $address[] = $this->toUpper($this->getBat());
 
         // Line 4
-        $address[] = sprintf('%s %s %s', $this->getStreetNumber(), $this->getStreetType(), $this->getStreetName());
+        $address[] = $this->toUpper(sprintf('%s %s %s', $this->getStreetNumber(), $this->getStreetType(), $this->getStreetName()));
 
         // Line 5
-        $address[] = $this->getCity() !== $this->getCityGeo() ? $this->getCityGeo() : '';
+        $address[] = $this->toUpper($this->getCity() !== $this->getCityGeo() ? $this->getCityGeo() : '');
 
         // Line 6
-        $address[] = sprintf('%s %s', $this->getZipCode(), $this->getCity());
+        $address[] = $this->toUpper(sprintf('%s %s', $this->getZipCode(), $this->getCity()));
 
-        $addressfiltered = array_filter($address, function ($value){
-            return '' !== $value;
+        // Line 7
+        if ('FRANCE' !== $this->toUpper($this->getCountry())) {
+            $address[] = $this->toUpper($this->getCountry());
         }
+
+        $addressfiltered = array_filter($address,
+            function ($value) {
+                return '' !== $value;
+            }
+        );
+        
+        array_walk($addressfiltered,
+             function (&$value) {
+                 $value = substr($value, 0, 38);
+             }
         );
 
         return implode(PHP_EOL, $addressfiltered);
